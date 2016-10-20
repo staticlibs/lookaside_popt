@@ -281,7 +281,6 @@ static void singleOptionHelp(FILE * fp, columns_t columns,
     char * left;
     size_t nb = maxLeftCol + 1;
     int displaypad = 0;
-    int xx;
 
     /* Make sure there's more than enough room in target buffer. */
     if (opt->longName)	nb += strlen(opt->longName);
@@ -406,9 +405,9 @@ static void singleOptionHelp(FILE * fp, columns_t columns,
     }
 
     if (help)
-	xx = POPT_fprintf(fp,"  %-*s   ", (int)(maxLeftCol+displaypad), left);
+	fprintf(fp,"  %-*s   ", (int)(maxLeftCol+displaypad), left);
     else {
-	xx = POPT_fprintf(fp,"  %s\n", left); 
+	fprintf(fp,"  %s\n", left);
 	goto out;
     }
 
@@ -428,18 +427,19 @@ static void singleOptionHelp(FILE * fp, columns_t columns,
 	if (ch == help) break;		/* give up */
 	while (ch > (help + 1) && _isspaceptr(ch))
 	    ch = POPT_prev_char (ch);
-	ch++;
+	ch = POPT_next_char(ch);
 
 	sprintf(format, "%%.%ds\n%%%ds", (int) (ch - help), (int) indentLength);
 	/*@-formatconst@*/
-	xx = POPT_fprintf(fp, format, help, " ");
+	fprintf(fp, format, help, " ");
 	/*@=formatconst@*/
 	help = ch;
-	while (_isspaceptr(help) && *help) help++;
+	while (_isspaceptr(help) && *help)
+	    help = POPT_next_char(help);
 	helpLength = strlen(help);
     }
 
-    if (helpLength) xx = POPT_fprintf(fp, "%s\n", help);
+    if (helpLength) fprintf(fp, "%s\n", help);
     help = NULL;
 
 out:
@@ -553,7 +553,6 @@ static void singleTableHelp(poptContext con, FILE * fp,
 {
     const struct poptOption * opt;
     const char *sub_transdom;
-    int xx;
 
     if (table == poptAliasOptions) {
 	itemHelp(fp, con->aliases, con->numAliases, columns, NULL);
@@ -577,7 +576,7 @@ static void singleTableHelp(poptContext con, FILE * fp,
 	    sub_transdom = translation_domain;
 	    
 	if (opt->descrip)
-	    xx = POPT_fprintf(fp, "\n%s\n", D_(sub_transdom, opt->descrip));
+	    fprintf(fp, "\n%s\n", D_(sub_transdom, opt->descrip));
 
 	singleTableHelp(con, fp, opt->arg, columns, sub_transdom);
     }
@@ -767,7 +766,7 @@ static size_t singleTableUsage(poptContext con, FILE * fp, columns_t columns,
 	    translation_domain = (const char *)opt->arg;
 	} else if ((opt->argInfo & POPT_ARG_MASK) == POPT_ARG_INCLUDE_TABLE) {
 	    if (done) {
-		int i;
+		int i = done->nopts;
 		if (done->opts != NULL)
 		for (i = 0; i < done->nopts; i++) {
 		    const void * that = done->opts[i];
