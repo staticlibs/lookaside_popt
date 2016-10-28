@@ -10,11 +10,6 @@
 
 #include "system.h"
 
-#define	POPT_USE_TIOCGWINSZ
-#ifdef	POPT_USE_TIOCGWINSZ
-#include <sys/ioctl.h>
-#endif
-
 #define	POPT_WCHAR_HACK
 #ifdef 	POPT_WCHAR_HACK
 #include <wchar.h>			/* for mbsrtowcs */

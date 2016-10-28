@@ -63,7 +63,6 @@
 					/*!< clear arg bit(s) */
 
 #define	POPT_ARGFLAG_SHOW_DEFAULT 0x00800000U /*!< show default value in --help */
-#define	POPT_ARGFLAG_RANDOM	0x00400000U  /*<! random value in [1,arg] */
 
 /*@}*/
 
