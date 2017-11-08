@@ -6,6 +6,10 @@
    file accompanying popt source distributions, available from 
    ftp://ftp.rpm.org/pub/rpm/dist. */
 
+#ifndef _WIN32
+#include <unistd.h>
+#endif
+
 #include "system.h"
 #include "findme.h"
 
